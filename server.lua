@@ -24,8 +24,8 @@ CreateThread(function()
                 sources = GetPlayerPed(ped.PlayerData.source),
                 sourceplayer = ped.PlayerData.source,
 
-                job = ped.PlayerData.job or {},
-                joblabel = ped.PlayerData.job.label or 'Civilian',
+                --job = ped.PlayerData.job or {},
+                --joblabel = ped.PlayerData.job.label or 'Civilian',
             }
 
         end
