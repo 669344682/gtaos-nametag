@@ -40,9 +40,11 @@ RegisterNetEvent('qb-nametag:client:ShowNametag',function(players)
         
 
         if not DoesBlipExist(blip) then
-            blip = AddBlipForEntity(ped)
-            SetBlipSprite(blip, 1)
-            ShowHeadingIndicatorOnBlip(blip, true)
+            if GetPlayerPed(-1) ~= ped then
+                blip = AddBlipForEntity(ped)
+                SetBlipSprite(blip, 1)
+                ShowHeadingIndicatorOnBlip(blip, true)
+            end
         else
             local veh = GetVehiclePedIsIn(ped, false)
             local blipSprite = GetBlipSprite(blip)
