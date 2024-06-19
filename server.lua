@@ -43,10 +43,6 @@ CreateThread(function()
                 lastname = value.PlayerData.charinfo.lastname,
                 source = value.PlayerData.source,
 
-                joblabel = value.PlayerData.job.label or '平民',
-                jobgradelevel = value.PlayerData.job.grade.level or '0',
-                jobgradeName = value.PlayerData.job.grade.name or '无',
-                jobduty = value.PlayerData.job.onduty or false,
                 permission = QBCore.Functions.HasPermission(value.PlayerData.source, 'admin') or false,
             }
         end
