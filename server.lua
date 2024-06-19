@@ -1,39 +1,56 @@
-QBCore = exports['qb-core']:GetCoreObject()
-
 local players = {}
 
-RegisterNetEvent('qb-nametag:server:GetPlayers', function()
-    local src = source
-    TriggerClientEvent('qb-nametag:client:ShowNametag', src, players)
+
+RegisterServerEvent("QBCore:Server:PlayerLoaded",function(source)
+    -- local id = QBCore.Functions.GetPlayer(source)
+    local id = source.PlayerData.source
+    players[id] = {
+        cid = source.PlayerData.cid,
+        firstname = source.PlayerData.charinfo.firstname,
+        lastname = source.PlayerData.charinfo.lastname,
+        source = source.PlayerData.source,
+
+        joblabel = source.PlayerData.job.label or '平民',
+        jobgradelevel = source.PlayerData.job.grade.level or '0',
+        jobgradeName = source.PlayerData.job.grade.name or '无',
+        jobduty = source.PlayerData.job.onduty or false,
+        permission = QBCore.Functions.HasPermission(source.PlayerData.source, 'admin') or false
+    }
+    --print("nametag server")
+    TriggerClientEvent("gtaos-nametag:client:updatePlayer",-1,players)
 end)
 
+RegisterServerEvent("QBCore:Server:OnPlayerUnload",function(source)
+    local id = source.PlayerData.source
+    players[id] = nil
+    TriggerClientEvent("gtaos-nametag:client:updatePlayer",-1,players)
+end)
 
+AddEventHandler('playerDropped', function (reason)
+    if players[source] then
+        players[source] = nil
+        TriggerClientEvent("gtaos-nametag:client:updatePlayer",-1,players)
+    end
+end)
+  
 CreateThread(function()
     while true do
-        local tempPlayers = {}
-        for _, v in pairs(QBCore.Functions.GetPlayers()) do
-            local targetped = GetPlayerPed(v)
-            local ped = QBCore.Functions.GetPlayer(v)
+        Wait(1000*5)
+        for key, value in pairs(QBCore.Functions.GetQBPlayers()) do
+            players[key] = {
+                cid = value.PlayerData.cid,
+                firstname = value.PlayerData.charinfo.firstname,
+                lastname = value.PlayerData.charinfo.lastname,
+                source = value.PlayerData.source,
 
-            tempPlayers[#tempPlayers + 1] = {
-                name = (ped.PlayerData.charinfo.firstname or '') .. ' ' .. (ped.PlayerData.charinfo.lastname or ''), --  .. ' | (' .. (GetPlayerName(v) or '') .. ')',
-                id = v,
-                coords = GetEntityCoords(targetped),
-                cid = ped.PlayerData.charinfo.firstname .. ' ' .. ped.PlayerData.charinfo.lastname,
-                citizenid = ped.PlayerData.citizenid,
-                sources = GetPlayerPed(ped.PlayerData.source),
-                sourceplayer = ped.PlayerData.source,
-
-                --job = ped.PlayerData.job or {},
-                --joblabel = ped.PlayerData.job.label or 'Civilian',
+                joblabel = value.PlayerData.job.label or '平民',
+                jobgradelevel = value.PlayerData.job.grade.level or '0',
+                jobgradeName = value.PlayerData.job.grade.name or '无',
+                jobduty = value.PlayerData.job.onduty or false,
+                permission = QBCore.Functions.HasPermission(value.PlayerData.source, 'admin') or false,
             }
-
         end
-        -- Sort players list by source ID (1,2,3,4,5, etc) --
-        table.sort(tempPlayers, function(a, b)
-            return a.id < b.id
-        end)
-        players = tempPlayers
-        Wait(1500)
+        TriggerClientEvent("gtaos-nametag:client:updatePlayer",-1,players)
+        -- print(json.encode(players))
     end
 end)
