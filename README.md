@@ -1,6 +1,7 @@
-# qb-nametag ✴️
+# gtaos-nametag ✴️
 
-qb-nametag enables players' nametags with IDs to show once they spawn their peds.
+gtaos-nametag enables players' nametags with IDs to show once they spawn their peds.
+Only for QBCore
 
 ## Supported Features
 
