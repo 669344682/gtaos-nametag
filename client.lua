@@ -20,7 +20,7 @@ CreateThread(function()
         if troggle then
             if players then
                 for k,v in pairs(players) do
-                    if IsEntityVisible(PlayerPedId()) then
+                    if NetworkIsPlayerActive(GetPlayerFromServerId(v.source)) then
                         if v.source == GetPlayerPed(-1) then
                             if not showMyName then
                                 print(1)
